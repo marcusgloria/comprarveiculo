@@ -72,7 +72,7 @@ def criar_grafico_parcelas(df):
     return fig  
 
 def main():  
-    st.set_page_config(page_title="Análise de Compra de Veículo", layout="wide")  
+    st.set_page_config(page_title="Análise de Compra de Veículo", layout="centered")  
 
     st.title("📊 Analisador de Compra de Veículo")  
     st.markdown("""  
