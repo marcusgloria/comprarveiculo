@@ -193,13 +193,12 @@ def main():
         st.header("📊 Análise Detalhada")  
 
         # Valor do veículo movido para a aba de análise detalhada  
-        valor_carro_inicial = st.session_state.get('valor_veiculo_escolhido', 40000.0)  
+        valor_carro_inicial = st.session_state.get('valor_veiculo_escolhido', 10000.0)  
         valor_carro = st.number_input("Valor do Veículo (R$)",   
                                     min_value=0.0, value=valor_carro_inicial, step=1000.0)  
 
-        with st.sidebar:  
-            valor_entrada = st.number_input("Valor de Entrada (R$)",   
-                                        min_value=0.0, value=0.0, step=1000.0)  
+        valor_entrada = st.number_input("Valor de Entrada (R$)",   
+                                    min_value=0.0, value=0.0, step=1000.0)  
 
         custos_customizados = st.session_state.get('custos_customizados', {})  
         analise = AnalisadorCompraVeiculo(renda_mensal, patrimonio, custos_customizados)  
