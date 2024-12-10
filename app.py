@@ -260,7 +260,7 @@ def main():
     st.markdown(  
         """  
         <div style='text-align: center'>  
-            <p>Desenvolvido com ❤️ | Última atualização: Dezembro 2023</p>  
+            <p>Marcus Glória | Última atualização: Dezembro 2024</p>  
         </div>  
         """,  
         unsafe_allow_html=True  
