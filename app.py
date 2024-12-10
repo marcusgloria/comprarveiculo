@@ -285,4 +285,42 @@ def main():
             if nome and valor > 0:  
                 custos_extras[nome] = valor  
 
-        if st.button("Salvar Configurações  
+        if st.button("Salvar Configurações de Custos"):  
+            st.session_state.custos_customizados = {  
+                'combustivel': combustivel,  
+                'seguro_percentual': seguro_percentual,  
+                'ipva_percentual': ipva_percentual,  
+                'manutencao_percentual': manutencao_percentual,  
+                'custos_extras': custos_extras  
+            }  
+            st.success("Configurações de custos salvas com sucesso!")  
+
+    # Recomendações  
+    st.header("📋 Recomendações")  
+    recomendacoes = [  
+        "Procure carros usados para evitar depreciação inicial",  
+        "Compare diferentes opções de financiamento",  
+        "Considere fazer uma entrada maior para reduzir juros",  
+        "Mantenha uma reserva de emergência para manutenção",  
+        "Pesquise diferentes seguradoras para encontrar o melhor preço",  
+    ]  
+
+    if patrimonio * 0.1 < 10000:  
+        recomendacoes.insert(0, "Considere juntar mais dinheiro antes de comprar à vista")  
+
+    for rec in recomendacoes:  
+        st.write(f"• {rec}")  
+
+    # Footer  
+    st.markdown("---")  
+    st.markdown(  
+        """  
+        <div style='text-align: center'>  
+            <p>Marcus Glória | Última atualização: Dezembro 2024</p>  
+        </div>  
+        """,  
+        unsafe_allow_html=True  
+    )  
+
+if __name__ == "__main__":  
+    main()  
