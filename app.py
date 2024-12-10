@@ -105,7 +105,6 @@ def criar_grafico_parcelas(df):
     return fig  
 
 def main():  
-    
     st.set_page_config(page_title="Análise de Compra de Veículo", page_icon="📊", layout="centered")  
 
     st.title("📊 Analisador de Compra de Veículo")  
@@ -125,9 +124,9 @@ def main():
         with col1:  
             st.subheader("Dados Financeiros")  
             renda_mensal = st.number_input("Renda Mensal (R$)",   
-                                            min_value=0.0, value=5000.0, step=100.0, key='renda_auto')  
+                                         min_value=0.0, value=5000.0, step=100.0, key='renda_auto')  
             patrimonio = st.number_input("Patrimônio Disponível (R$)",   
-                                        min_value=0.0, value=10000.0, step=1000.0, key='patrimonio_auto')  
+                                       min_value=0.0, value=10000.0, step=1000.0, key='patrimonio_auto')  
 
         with col2:  
             st.subheader("Parâmetros do Financiamento")  
@@ -149,7 +148,7 @@ def main():
 
         with col1:  
             st.metric("Conservador", f"R$ {cenarios['Conservador']:,.2f}",   
-                        "20% da renda")  
+                     "20% da renda")  
             st.markdown("""  
                 💡 **Cenário Conservador**  
                 - Menor risco financeiro  
@@ -159,7 +158,7 @@ def main():
 
         with col2:  
             st.metric("Moderado", f"R$ {cenarios['Moderado']:,.2f}",   
-                        "25% da renda")  
+                     "25% da renda")  
             st.markdown("""  
                 💡 **Cenário Moderado**  
                 - Risco moderado  
@@ -169,7 +168,7 @@ def main():
 
         with col3:  
             st.metric("Arrojado", f"R$ {cenarios['Arrojado']:,.2f}",   
-                        "30% da renda")  
+                     "30% da renda")  
             st.markdown("""  
                 💡 **Cenário Arrojado**  
                 - Maior risco financeiro  
@@ -194,7 +193,7 @@ def main():
 
         # Botão para usar valor na análise detalhada  
         cenario_escolhido = st.selectbox("Escolha um cenário para análise detalhada",  
-                                        ['Conservador', 'Moderado', 'Arrojado'])  
+                                       ['Conservador', 'Moderado', 'Arrojado'])  
 
         if st.button("Usar este valor para análise detalhada"):  
             st.session_state.valor_veiculo_escolhido = cenarios[cenario_escolhido]  
@@ -224,7 +223,7 @@ def main():
             st.metric("Máximo à Vista (10% do patrimônio)", f"R$ {patrimonio * 0.1:.2f}")  
         with col3:  
             st.metric("Custos Fixos Mensais",     
-                        f"R$ {sum(analise.calcular_custos_fixos(valor_carro).values()):.2f}")  
+                     f"R$ {sum(analise.calcular_custos_fixos(valor_carro).values()):.2f}")  
 
         # Análise de Custos  
         st.header("📈 Análise de Custos Mensais")  
@@ -296,7 +295,7 @@ def main():
         # Custos extras  
         st.subheader("Custos Extras Mensais")  
         num_custos_extras = st.number_input("Número de custos extras",     
-                                            min_value=0, max_value=5, value=0)  
+                                          min_value=0, max_value=5, value=0)  
 
         custos_extras = {}  
         for i in range(num_custos_extras):  
@@ -305,7 +304,7 @@ def main():
                 nome = st.text_input(f"Nome do custo extra {i+1}")  
             with col2:  
                 valor = st.number_input(f"Valor do custo extra {i+1}",     
-                                        min_value=0.0, step=50.0)  
+                                      min_value=0.0, step=50.0)  
             if nome and valor > 0:  
                 custos_extras[nome] = valor  
 
@@ -347,5 +346,5 @@ def main():
         unsafe_allow_html=True  
     )  
 
-    if __name__ == "__main__":  
-        main()
+if __name__ == "__main__":  
+    main()  
