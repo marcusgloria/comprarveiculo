@@ -35,17 +35,14 @@ class AnalisadorCompraVeiculo:
         valor_entrada_disponivel = min(self.patrimonio, self.patrimonio * 0.9)  
         limite_original = self.limite_mensal  
 
-        # Cenário conservador (20% da renda)  
         self.limite_mensal = self.renda_mensal * 0.20  
         valor_conservador = self.calcular_valor_maximo_veiculo(  
             taxa_juros_anual, prazo_meses, valor_entrada_disponivel * 0.5)  
 
-        # Cenário moderado (25% da renda)  
         self.limite_mensal = self.renda_mensal * 0.25  
         valor_moderado = self.calcular_valor_maximo_veiculo(  
             taxa_juros_anual, prazo_meses, valor_entrada_disponivel * 0.7)  
 
-        # Cenário arrojado (30% da renda)  
         self.limite_mensal = self.renda_mensal * 0.30  
         valor_arrojado = self.calcular_valor_maximo_veiculo(  
             taxa_juros_anual, prazo_meses, valor_entrada_disponivel)  
@@ -113,7 +110,6 @@ def main():
     considerando sua renda mensal, patrimônio disponível e custos personalizados.  
     """)  
 
-    # Tabs para diferentes análises  
     tab1, tab2, tab3 = st.tabs(["Cálculo Automático", "Análise Detalhada", "Custos Personalizados"])  
 
     with tab1:  
@@ -135,13 +131,9 @@ def main():
             prazo_base = st.selectbox("Prazo Base (meses)",   
                                     options=[24, 36, 48, 60, 72], index=2)  
 
-        # Criar instância do analisador  
         analise = AnalisadorCompraVeiculo(renda_mensal, patrimonio)  
-
-        # Calcular cenários  
         cenarios = analise.sugerir_valores_veiculo(taxa_base, prazo_base)  
 
-        # Exibir resultados  
         st.subheader("Sugestões de Valor do Veículo")  
 
         col1, col2, col3 = st.columns(3)  
@@ -176,7 +168,6 @@ def main():
                 - Maior comprometimento da renda  
             """)  
 
-        # Gráfico comparativo  
         dados_grafico = pd.DataFrame({  
             'Cenário': ['Conservador', 'Moderado', 'Arrojado'],  
             'Valor': [cenarios['Conservador'], cenarios['Moderado'], cenarios['Arrojado']]  
@@ -191,7 +182,6 @@ def main():
         fig.update_traces(textposition='outside')  
         st.plotly_chart(fig, use_container_width=True)  
 
-        # Botão para usar valor na análise detalhada  
         cenario_escolhido = st.selectbox("Escolha um cenário para análise detalhada",  
                                        ['Conservador', 'Moderado', 'Arrojado'])  
 
@@ -199,23 +189,21 @@ def main():
             st.session_state.valor_veiculo_escolhido = cenarios[cenario_escolhido]  
             st.success(f"Valor de R$ {cenarios[cenario_escolhido]:,.2f} definido para análise!")  
 
-    with tab2:  # Análise Detalhada  
-        # Usar valor escolhido na primeira tab, se disponível  
+    with tab2:  
+        st.header("📊 Análise Detalhada")  
+
+        # Valor do veículo movido para a aba de análise detalhada  
         valor_carro_inicial = st.session_state.get('valor_veiculo_escolhido', 40000.0)  
+        valor_carro = st.number_input("Valor do Veículo (R$)",   
+                                    min_value=0.0, value=valor_carro_inicial, step=1000.0)  
 
         with st.sidebar:  
-            valor_carro = st.number_input("Valor do Carro (R$)",   
-                                    min_value=0.0, value=valor_carro_inicial, step=1000.0)  
             valor_entrada = st.number_input("Valor de Entrada (R$)",   
                                         min_value=0.0, value=0.0, step=1000.0)  
 
-        # Custos personalizados do usuário  
         custos_customizados = st.session_state.get('custos_customizados', {})  
-
-        # Criar instância do analisador  
         analise = AnalisadorCompraVeiculo(renda_mensal, patrimonio, custos_customizados)  
 
-        # Mostrar informações básicas  
         col1, col2, col3 = st.columns(3)  
         with col1:  
             st.metric("Limite Mensal (30% da renda)", f"R$ {analise.limite_mensal:.2f}")  
@@ -225,7 +213,6 @@ def main():
             st.metric("Custos Fixos Mensais",     
                      f"R$ {sum(analise.calcular_custos_fixos(valor_carro).values()):.2f}")  
 
-        # Análise de Custos  
         st.header("📈 Análise de Custos Mensais")  
         custos = analise.calcular_custos_fixos(valor_carro)  
         col1, col2 = st.columns([2, 1])  
@@ -238,32 +225,26 @@ def main():
             for item, valor in custos.items():  
                 st.write(f"{item}: R$ {valor:.2f}")  
 
-        # Cenários de Financiamento  
         st.header("💰 Cenários de Financiamento")  
 
-        # Inputs personalizados para financiamento  
         col1, col2 = st.columns(2)  
         with col1:  
             taxas = st.multiselect(  
-                "Selecione as taxas de juros anuais (%)",    
-                options=[8, 10, 12, 15, 18, 20, 23, 25],    
-                default=[12, 15, 18, 23]    
+                "Selecione as taxas de juros anuais (%)",  
+                options=[8, 10, 12, 15, 18, 20, 23, 25],  
+                default=[12, 15, 18, 23]  
             )  
         with col2:  
             prazos = st.multiselect(  
-                "Selecione os prazos (meses)",    
-                options=[24, 36, 48, 60, 72],    
-                default=[36, 48, 60]    
+                "Selecione os prazos (meses)",  
+                options=[24, 36, 48, 60, 72],  
+                default=[36, 48, 60]  
             )  
 
         if taxas and prazos:  
-            # Calcular cenários  
             df_cenarios = analise.calcular_cenarios_financiamento(valor_carro, valor_entrada, taxas, prazos)  
-
-            # Mostrar gráfico de parcelas  
             st.plotly_chart(criar_grafico_parcelas(df_cenarios), use_container_width=True)  
 
-            # Mostrar tabela detalhada  
             st.subheader("Detalhamento dos Cenários")  
             df_formatado = df_cenarios.style.format({  
                 'Parcela': 'R$ {:,.2f}',  
@@ -273,26 +254,22 @@ def main():
             })  
             st.dataframe(df_formatado)  
 
-            # Alertas de comprometimento de renda  
             for _, cenario in df_cenarios.iterrows():  
                 if cenario['Comprometimento Renda'] > 30:  
                     st.warning(f"⚠️ Cenário com {cenario['Taxa']} em {cenario['Prazo']} meses compromete {cenario['Comprometimento Renda']:.1f}% da sua renda!")  
 
-    with tab3:  # Custos Personalizados  
+    with tab3:  
         st.header("🔧 Personalização de Custos")  
 
-        # Custos básicos  
         st.subheader("Custos Básicos Mensais")  
         combustivel = st.number_input("Gasto mensal com Combustível (R$)",     
                                     min_value=0.0, value=300.0, step=50.0)  
 
-        # Percentuais  
         st.subheader("Percentuais sobre o valor do carro (ao ano)")  
         seguro_percentual = st.slider("Percentual do Seguro", 0.0, 10.0, 4.0) / 100  
         ipva_percentual = st.slider("Percentual do IPVA", 0.0, 10.0, 4.0) / 100  
         manutencao_percentual = st.slider("Percentual de Manutenção", 0.0, 10.0, 2.0) / 100  
 
-        # Custos extras  
         st.subheader("Custos Extras Mensais")  
         num_custos_extras = st.number_input("Número de custos extras",     
                                           min_value=0, max_value=5, value=0)  
@@ -308,43 +285,4 @@ def main():
             if nome and valor > 0:  
                 custos_extras[nome] = valor  
 
-        # Salvar custos personalizados  
-        if st.button("Salvar Configurações de Custos"):  
-            st.session_state.custos_customizados = {  
-                'combustivel': combustivel,  
-                'seguro_percentual': seguro_percentual,  
-                'ipva_percentual': ipva_percentual,  
-                'manutencao_percentual': manutencao_percentual,  
-                'custos_extras': custos_extras  
-            }  
-            st.success("Configurações de custos salvas com sucesso!")  
-
-    # Recomendações  
-    st.header("📋 Recomendações")  
-    recomendacoes = [  
-        "Procure carros usados para evitar depreciação inicial",  
-        "Compare diferentes opções de financiamento",  
-        "Considere fazer uma entrada maior para reduzir juros",  
-        "Mantenha uma reserva de emergência para manutenção",  
-        "Pesquise diferentes seguradoras para encontrar o melhor preço",  
-    ]  
-
-    if patrimonio * 0.1 < 10000:  
-        recomendacoes.insert(0, "Considere juntar mais dinheiro antes de comprar à vista")  
-
-    for rec in recomendacoes:  
-        st.write(f"• {rec}")  
-
-    # Footer  
-    st.markdown("---")  
-    st.markdown(  
-        """  
-        <div style='text-align: center'>  
-            <p>Marcus Glória | Última atualização: Dezembro 2024</p>  
-        </div>  
-        """,  
-        unsafe_allow_html=True  
-    )  
-
-if __name__ == "__main__":  
-    main()  
+        if st.button("Salvar Configurações  
